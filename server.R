@@ -6,14 +6,16 @@
 #
 
 library(shiny)
+library(ggplot2)
+library(rCharts)
 
-
-rpmRange <- seq(600,3200,100)
+rpmRange <- seq(100,3200,100)
 
 getSpeed <- function(engineRPM,tireSize,transmissionGear,odGear,transferCaseGear,axleGear){
   speed <- (engineRPM * (tireSize *pi) * 60) / (transmissionGear * odGear * transferCaseGear * axleGear * 63360)
   return(as.numeric(speed))
 }
+
 
 parseTransmission <- function(transmission,gear){
   switch(transmission,
@@ -47,33 +49,42 @@ shinyServer(function(input, output) {
   output$transmission <- renderText({input$transmission})
   output$transmissionGear <- renderText({parseTransmission(input$transmission,input$gear)})
   output$odGear <- renderText({input$odGear})
-  #transGear <- parseTransmission(input$transmission,input$gear) 
-  #   speeds <- getSpeed(
-  #     rpmRange,
-  #     input$tireSize,
-  #     parseTransmission(input$transmission,input$gear),
-  #     input$odGear,
-  #     input$transferCaseGear,
-  #     input$axleGear
-  #   )
-  #speeds <- getSpeed(rpmRange,as.numeric(input$tireSize),1,1,1,5.38)
-  #       rpmRange,
-  #       input$tireSize,
-  #       1,
-  #       input$odGear,
-  #       input$transferCaseGear,
-  #       input$axleGear
-  #     )
-  #speeds <- getSpeed(rpmRange,30,1,1,1,5.38)
-  output$debug <- renderText({
-    getSpeed(
-      engineRPM = rpmRange,
-      tireSize = input$tireSize,
-      #parseTransmission(input$transmission,input$gear),
-      transmissionGear = 1,
-      odGear = input$odGear,
-      transferCaseGear = input$transferCaseGear,
-      axleGear = input$axleGear
+#   output$plot <- renderPlot({
+#     speedData <- data.frame(
+#       speed = getSpeed(
+#         engineRPM = rpmRange,
+#         tireSize = as.numeric(input$tireSize),
+#         parseTransmission(input$transmission,input$gear),
+#         #transmissionGear = 1,
+#         odGear = as.numeric(input$odGear),
+#         #transferCaseGear = as.numeric(input$transferCaseGear),
+#         transferCaseGear = 1,
+#         axleGear = as.numeric(input$axleGear)
+#       ),
+#       RPM = rpmRange
+#       )
+#     g <- ggplot(speedData, aes(RPM,speed)) +
+#       geom_line() + ylim(c(-20,60))
+#     print(g)
+#   })
+  output$chart <- renderChart2({
+    speedData <- data.frame(
+      speed = getSpeed(
+        engineRPM = rpmRange,
+        tireSize = as.numeric(input$tireSize),
+        parseTransmission(input$transmission,input$gear),
+        #transmissionGear = 1,
+        odGear = as.numeric(input$odGear),
+        #transferCaseGear = as.numeric(input$transferCaseGear),
+        transferCaseGear = 1,
+        axleGear = as.numeric(input$axleGear)
+      ),
+      RPM = rpmRange
     )
+    #speedData = transform(speedData)
+    g <- mPlot(x="RPM", y="speed", type="Line", data=speedData)
+    
+    return(g)
   })
+  #output$debug <- parseTransmission(input$transmission,input$gear)
 })

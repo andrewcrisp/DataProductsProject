@@ -6,7 +6,7 @@
 #
 
 library(shiny)
-
+library(rCharts)
 shinyUI(fluidPage(
 
   # Application title
@@ -89,7 +89,8 @@ shinyUI(fluidPage(
       ),
       column(8,
              textOutput("debug"),
-             plotOutput("plot")
+             #plotOutput("plot"),
+             showOutput("chart","morris")
              )
     )
   )

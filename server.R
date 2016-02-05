@@ -45,9 +45,15 @@ parseTransmission <- function(transmission,gear){
 }
 
 shinyServer(function(input, output) {
-  output$instructions <- renderText({
-    "This is some instruction.\n
-    "})
+  output$jeep <- renderImage({
+    filename <- normalizePath(file.path('./jeep.jpg'))
+    list(src=filename,
+         alt=paste("1952 M38A1"),
+         width = 320,
+         height = 200
+         )
+
+  },deleteFile = FALSE)
   output$tireSize <- renderText({as.numeric(input$tireSize)})
   output$axleGear <- renderText({as.numeric(input$axleGear)})
   output$transferCaseGear <- renderText({input$transferCaseGear})

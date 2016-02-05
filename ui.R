@@ -22,6 +22,7 @@ shinyUI(
   fluidPage(
     # Application title
     titlePanel("Willys speed calculator"),
+    
     withMathJax(),
     fluidRow(
       shiny::column(1,  
@@ -31,7 +32,7 @@ shinyUI(
                     "Transmission:", textOutput("transmission"),
                     "Gear:", textOutput("transmissionGear"),
                     "Overdrive", textOutput("odGear")
-                    ),
+      ),
       shiny::column(3,
                     sliderInput("tireSize",
                                 "Tire size:",
@@ -101,40 +102,40 @@ shinyUI(
                                p('$$\\frac{Engine RPM * Tire circumference in inches * 60 \\frac{minutes}{hour}}{Transmission Gear * OD Gear * Trasfer Case Gear * Axle Gear * 63360\\frac{inches}{mile}}$$'),
                                p("I often used this calculator when restoring my own 1952 Willys M38A1.  The numbers are identical to Mr Grover's.  The primary enhancement is a speed vs RPM graph for the selected configuration."),
                                p("Select the desired configuration.  The graph and reported information will update automatically.  Switch to the \"Output\" tab to see the graph.  Click a point on the graph to receive the specific RPM and speed at that point on the line."),
-                               p("These are old vehicles with old engines.  My 1952 went up to about 50MPH.  While possible, that pushed the engine up to about 3000RPM.  The engine and transmission were both screaming to spin that fast.  Accordingly, it is higly discouraged from cruising above about 2800 RPM.  Note the amber section on the graph corresponds to the dangerous, but possible, RPMs.  The red section shows speeds that should be avoided for fear of destroying the engine.")
-                               
+                               p("These are old vehicles with old engines.  My 1952 went up to about 50MPH.  While possible, that pushed the engine up to about 3000RPM.  The engine and transmission were both screaming to spin that fast.  Accordingly, it is higly discouraged from cruising above about 2800 RPM.  Note the amber section on the graph corresponds to the dangerous, but possible, RPMs.  The red section shows speeds that should be avoided for fear of destroying the engine."),
+                               imageOutput("jeep")
                       ),
                       tabPanel("Output",plotOutput("plot",click = "plot_click"),textOutput("clickRPM"),textOutput("clickSpeed"))
                       
-                      )#,
+                    )#,
                     #showOutput("chart","morris")
       )
     )#,
-#     googleLineChart("googleChart",
-#                     width="100%", height = "475px",
-#                     options = list(
-#                       hAxis = list(
-#                         title = "Speed (MPH)",
-#                         viewWindow = xlim
-#                       ),
-#                       vAxis = list(
-#                         title = "RPM",
-#                         viewWindow = ylim
-#                       ),
-#                       chartArea = list(
-#                         top = 50, left = 75,
-#                         height = "75%", width = "75%"
-#                       ),
-#                       #explorer = list(),
-#                       titleTextStyle = list(
-#                         fontSize = 16
-#                       ),
-#                       tooltip = list(
-#                         textStyle = list(
-#                           fontSize = 12
-#                         )
-#                       )
-#                     )
-#     )
+    #     googleLineChart("googleChart",
+    #                     width="100%", height = "475px",
+    #                     options = list(
+    #                       hAxis = list(
+    #                         title = "Speed (MPH)",
+    #                         viewWindow = xlim
+    #                       ),
+    #                       vAxis = list(
+    #                         title = "RPM",
+    #                         viewWindow = ylim
+    #                       ),
+    #                       chartArea = list(
+    #                         top = 50, left = 75,
+    #                         height = "75%", width = "75%"
+    #                       ),
+    #                       #explorer = list(),
+    #                       titleTextStyle = list(
+    #                         fontSize = 16
+    #                       ),
+    #                       tooltip = list(
+    #                         textStyle = list(
+    #                           fontSize = 12
+    #                         )
+    #                       )
+    #                     )
+    #     )
   )
 )

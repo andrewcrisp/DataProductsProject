@@ -6,16 +6,18 @@
 #
 
 library(shiny)
-library(ggplot2)
-library(rCharts)
+#library(ggplot2)
+#library(rCharts)
+#library(googleCharts)
 
 rpmRange <- seq(100,3200,100)
+xlim <- c(100,3200)
+ylim <- c(-15,80)
 
 getSpeed <- function(engineRPM,tireSize,transmissionGear,odGear,transferCaseGear,axleGear){
   speed <- (engineRPM * (tireSize *pi) * 60) / (transmissionGear * odGear * transferCaseGear * axleGear * 63360)
   return(as.numeric(speed))
 }
-
 
 parseTransmission <- function(transmission,gear){
   switch(transmission,
@@ -43,48 +45,40 @@ parseTransmission <- function(transmission,gear){
 }
 
 shinyServer(function(input, output) {
+  output$instructions <- renderText({
+    "This is some instruction.\n
+    "})
   output$tireSize <- renderText({as.numeric(input$tireSize)})
   output$axleGear <- renderText({as.numeric(input$axleGear)})
   output$transferCaseGear <- renderText({input$transferCaseGear})
   output$transmission <- renderText({input$transmission})
   output$transmissionGear <- renderText({parseTransmission(input$transmission,input$gear)})
   output$odGear <- renderText({input$odGear})
-#   output$plot <- renderPlot({
-#     speedData <- data.frame(
-#       speed = getSpeed(
-#         engineRPM = rpmRange,
-#         tireSize = as.numeric(input$tireSize),
-#         parseTransmission(input$transmission,input$gear),
-#         #transmissionGear = 1,
-#         odGear = as.numeric(input$odGear),
-#         #transferCaseGear = as.numeric(input$transferCaseGear),
-#         transferCaseGear = 1,
-#         axleGear = as.numeric(input$axleGear)
-#       ),
-#       RPM = rpmRange
-#       )
-#     g <- ggplot(speedData, aes(RPM,speed)) +
-#       geom_line() + ylim(c(-20,60))
-#     print(g)
-#   })
-  output$chart <- renderChart2({
-    speedData <- data.frame(
-      speed = getSpeed(
-        engineRPM = rpmRange,
-        tireSize = as.numeric(input$tireSize),
-        parseTransmission(input$transmission,input$gear),
-        #transmissionGear = 1,
-        odGear = as.numeric(input$odGear),
-        #transferCaseGear = as.numeric(input$transferCaseGear),
-        transferCaseGear = 1,
-        axleGear = as.numeric(input$axleGear)
-      ),
-      RPM = rpmRange
-    )
-    #speedData = transform(speedData)
-    g <- mPlot(x="RPM", y="speed", type="Line", data=speedData)
-    
-    return(g)
+
+  speedData <- reactive({data.frame(
+    speed = getSpeed(
+      engineRPM = rpmRange,
+      tireSize = as.numeric(input$tireSize),
+      parseTransmission(input$transmission,input$gear),
+      odGear = as.numeric(input$odGear),
+      transferCaseGear = as.numeric(input$transferCaseGear),
+      axleGear = as.numeric(input$axleGear)
+    ),
+    RPM = rpmRange
+  )
   })
-  #output$debug <- parseTransmission(input$transmission,input$gear)
+  output$plot <- renderPlot({
+    p<-plot(as.numeric(speedData()$RPM),
+         as.numeric(speedData()$speed),
+         type = "l",
+         xlim = xlim, 
+         ylim = ylim,
+         xlab = "RPM",
+         ylab = "Speed (MPH)")
+    rect(3000,ylim[1]-5,xlim[2]+200,ylim[2]+5,density = 10,col = "red")
+    rect(2800,ylim[1]-5,3000,ylim[2]+5,density = 10,col = "orange")
+    rect(1200,ylim[1]-5,2800,ylim[2]+5,density = 10,col = "green")
+    })
+  output$clickRPM <- renderText({paste0("RPM = ", input$plot_click$x)})
+  output$clickSpeed <- renderText({paste0("Speed = ", input$plot_click$y, " MPH")})
 })

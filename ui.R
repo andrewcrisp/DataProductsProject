@@ -1,10 +1,3 @@
-
-# This is the user-interface definition of a Shiny web application.
-# You can find out more about building applications with Shiny here:
-#
-# http://shiny.rstudio.com
-#
-
 library(shiny)
 library(rCharts)
 library(googleCharts)
@@ -20,7 +13,6 @@ ylim <- list(
 
 shinyUI(
   fluidPage(
-    # Application title
     titlePanel("Willys speed calculator"),
     
     withMathJax(),
@@ -98,7 +90,7 @@ shinyUI(
                     tabsetPanel(
                       #tabPanel("Instructions", verbatimTextOutput("instructions")),
                       tabPanel("Instructions", 
-                               p("This is a speed calculator for older Willys vehicles.  I largely just cloned the functionality of the ",tags$a("Willys Utility Vehicle Speed Calculator", href = "http://www.public.asu.edu/~grover/willys/speed.html"), "by Richarg Grover.  The equation used is the same as his:"),
+                               p("This is a speed calculator for older Willys vehicles.  I largely just cloned the functionality of the ",tags$a("Willys Utility Vehicle Speed Calculator", href = "http://www.public.asu.edu/~grover/willys/speed.html"), "by Richard Grover.  The equation used is the same as his:"),
                                p('$$\\frac{Engine RPM * Tire circumference in inches * 60 \\frac{minutes}{hour}}{Transmission Gear * OD Gear * Trasfer Case Gear * Axle Gear * 63360\\frac{inches}{mile}}$$'),
                                p("I often used this calculator when restoring my own 1952 Willys M38A1.  The numbers are identical to Mr Grover's.  The primary enhancement is a speed vs RPM graph for the selected configuration."),
                                p("Select the desired configuration.  The graph and reported information will update automatically.  Switch to the \"Output\" tab to see the graph.  Click a point on the graph to receive the specific RPM and speed at that point on the line."),
